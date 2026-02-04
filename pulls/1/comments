@@ -1,0 +1,41 @@
+## 🔄 Actualización Requerida: Nombres de Ejecutables e Iconos Correctos
+
+Necesitamos actualizar la configuración `APPS_CONFIG` en `launcher.py` con los nombres reales de los ejecutables y crear iconos apropiados según su función:
+
+### Configuración Correcta de Aplicaciones:
+
+```python
+APPS_CONFIG = [
+    {"name": "PROGAIN", "exe": "progain_app.exe", "icon": "construction", "description": "Proyectos de Construcción"},
+    {"name": "EQUIPOS", "exe": "alquiler_equipos.exe", "icon": "truck", "description": "Alquiler de Equipos"},
+    {"name": "FACTURAS", "exe": "gestion_facturas.exe", "icon": "receipt", "description": "Gastos e Ingresos"},
+    {"name": "FACTURAS EMP", "exe": "facturacion_gui.exe", "icon": "business", "description": "Facturación Interna"},
+    {"name": "LICITACIONES", "exe": "gestor_licitaciones_db.exe", "icon": "gavel", "description": "Gestión de Licitaciones"},
+    {"name": "FA-COT", "exe": "facot.exe", "icon": "calculator", "description": "Facturas y Cotizaciones"},
+    {"name": "DOCUMENTOS", "exe": "explorer.exe", "icon": "folder", "description": "Explorador de Archivos"},
+    {"name": "AJUSTES", "exe": "config.exe", "icon": "settings", "description": "Configuración"},
+    {"name": "SALIR", "exe": None, "icon": "power_settings_new", "description": "Cerrar Launcher"}
+]
+```
+
+### Iconos a Actualizar en `_create_icon()`:
+
+1. **construction** (PROGAIN): Casco de construcción + grúa
+2. **truck** (EQUIPOS): Camión/vehículo pesado
+3. **receipt** (FACTURAS): Factura/documento
+4. **business** (FACTURAS EMP): Edificio de empresa
+5. **gavel** (LICITACIONES): Mazo de juez (ya existe)
+6. **calculator** (FA-COT): Calculadora
+7. **folder** (DOCUMENTOS): Carpeta de archivos
+8. **settings** (AJUSTES): Engranaje (ya existe)
+9. **power_settings_new** (SALIR): Botón de power (ya existe)
+
+### Búsqueda Inteligente de Ejecutables:
+
+Agregar también una función de búsqueda mejorada que busque en:
+1. Directorio actual
+2. Subcarpeta `apps/`
+3. Directorio padre
+4. Rutas comunes de instalación
+
+Por favor actualiza el código con estos cambios.
