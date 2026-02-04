@@ -449,10 +449,7 @@ class LauncherWindow(QtWidgets.QWidget):
         if exe_path:
             try:
                 # Lanzar el programa
-                if sys.platform == "win32":
-                    subprocess.Popen([exe_path], shell=True)
-                else:
-                    subprocess.Popen([exe_path])
+                subprocess.Popen([exe_path])
                 print(f"Lanzando: {name} ({exe_path})")
             except Exception as e:
                 self._show_error(f"Error al lanzar {name}", str(e))
