@@ -58,13 +58,13 @@ class FirebaseManager:
                 "name": "Usuario Demo",
                 "email": "demo@zoec.com",
                 "permissions": {
+                    "progain": True,
                     "equipos": True,
-                    "contabilidad": True,
-                    "rrhh": True,
-                    "taller": True,
-                    "inventario": True,
-                    "gps": True,
-                    "archivos": True,
+                    "facturas": True,
+                    "facturas_emp": True,
+                    "licitaciones": True,
+                    "facot": True,
+                    "documentos": True,
                     "ajustes": True
                 },
                 "theme": "modern",
@@ -91,13 +91,13 @@ class FirebaseManager:
         
         # Permisos por defecto si no hay datos cargados
         return {
+            "progain": True,
             "equipos": True,
-            "contabilidad": True,
-            "rrhh": True,
-            "taller": True,
-            "inventario": True,
-            "gps": True,
-            "archivos": True,
+            "facturas": True,
+            "facturas_emp": True,
+            "licitaciones": True,
+            "facot": True,
+            "documentos": True,
             "ajustes": True
         }
     
