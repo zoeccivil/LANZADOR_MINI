@@ -168,8 +168,10 @@ class AppButton(QtWidgets.QWidget):
             painter.drawLine(13, 15, 27, 15)
             painter.drawLine(13, 19, 27, 19)
             painter.drawLine(13, 23, 20, 23)
-            # Símbolo de moneda
-            painter.drawText(22, 28, "$")
+            # Símbolo de moneda ($) dibujado con líneas
+            painter.drawLine(24, 22, 24, 30)  # Línea vertical
+            painter.drawArc(22, 23, 4, 3, 0, 180 * 16)  # Curva superior
+            painter.drawArc(22, 26, 4, 3, 180 * 16, 180 * 16)  # Curva inferior
             
         elif icon_name == "business":
             # Edificio de oficinas
