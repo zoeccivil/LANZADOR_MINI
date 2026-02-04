@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Test files
+test_ui.py
+*_screenshot.png
+
+# Build artifacts
+build/
+dist/
+*.spec
+
+# Logs
+*.log
+error_log.txt
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
