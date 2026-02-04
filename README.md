@@ -40,15 +40,15 @@ pip install PyQt6
 
 ## 🎯 Aplicaciones Configuradas
 
-1. **Equipos** - Gestión de equipos y maquinaria
-2. **Contabilidad** - Sistema contable
-3. **RRHH** - Recursos humanos
-4. **Taller** - Gestión de taller
-5. **Inventario** - Control de inventario
-6. **GPS** - Seguimiento GPS
-7. **Archivos** - Gestión de archivos
-8. **Ajustes** - Configuración del sistema
-9. **Salir** - Cerrar el launcher
+1. **PROGAIN** - Proyectos de Construcción
+2. **EQUIPOS** - Alquiler de Equipos
+3. **FACTURAS** - Gestión de Facturas
+4. **FACTURAS EMP** - Facturación Interna
+5. **LICITACIONES** - Gestión de Licitaciones
+6. **FA-COT** - Facturas y Cotizaciones
+7. **DOCUMENTOS** - Explorador de Archivos
+8. **AJUSTES** - Configuración del Sistema
+9. **SALIR** - Cerrar Launcher
 
 ## 🎨 Paleta de Colores
 
