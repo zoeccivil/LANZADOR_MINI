@@ -151,7 +151,7 @@ class LoaderWindow(QtWidgets.QWidget):
         """Configura el timer para la animación de progreso."""
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self._update_progress)
-        self.timer.setInterval(50)  # 50ms para animación suave (20 FPS mínimo)
+        self.timer.setInterval(50)  # 50ms para animación suave (20 FPS)
     
     def start_loading(self):
         """Inicia la animación de carga."""

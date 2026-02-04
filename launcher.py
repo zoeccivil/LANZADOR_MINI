@@ -193,6 +193,7 @@ class LauncherWindow(QtWidgets.QWidget):
     def __init__(self, firebase_manager=None):
         super().__init__()
         self.firebase_manager = firebase_manager
+        self.drag_position = None
         self._setup_window()
         self._setup_ui()
     

@@ -94,7 +94,7 @@ La estructura en `firebase_config.py` está lista para implementar:
 - Ventana sin bordes del sistema (frameless)
 - Draggable: Se puede mover arrastrando cualquier parte
 - Tamaño fijo: 380x450px (launcher), 400x250px (loader)
-- Animación de progreso suave a 60 FPS
+- Animación de progreso suave a 20 FPS
 - Iconos dibujados con QPainter (sin dependencias externas)
 
 ## 🔜 Mejoras Futuras
