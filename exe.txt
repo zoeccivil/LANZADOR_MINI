@@ -1,0 +1,1 @@
+pyinstaller launcher.py --name "lanzador_programas" --noconsole --onefile --clean --add-data "icons;icons" --hidden-import "PyQt6.QtSvg"
