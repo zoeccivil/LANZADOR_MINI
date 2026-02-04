@@ -8,6 +8,7 @@ Launcher minimalista con diseño profesional y grid 3x3.
 import sys
 import os
 import subprocess
+import math
 from PyQt6 import QtCore, QtGui, QtWidgets
 from firebase_config import FirebaseManager
 
@@ -221,11 +222,11 @@ class AppButton(QtWidgets.QWidget):
             # Dientes del engranaje (8 dientes)
             for i in range(8):
                 angle = i * 45
-                rad = angle * 3.14159 / 180
-                x1 = 20 + 10 * QtCore.qCos(rad)
-                y1 = 20 + 10 * QtCore.qSin(rad)
-                x2 = 20 + 13 * QtCore.qCos(rad)
-                y2 = 20 + 13 * QtCore.qSin(rad)
+                rad = math.radians(angle)
+                x1 = 20 + 10 * math.cos(rad)
+                y1 = 20 + 10 * math.sin(rad)
+                x2 = 20 + 13 * math.cos(rad)
+                y2 = 20 + 13 * math.sin(rad)
                 painter.drawLine(int(x1), int(y1), int(x2), int(y2))
             
         elif icon_name == "power_settings_new":
