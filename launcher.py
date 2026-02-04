@@ -3,14 +3,15 @@ import os
 import subprocess
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QGridLayout, QLabel, 
-    QFrame, QToolButton, QApplication, QGraphicsDropShadowEffect, QMessageBox
+    QFrame, QToolButton, QApplication, QGraphicsDropShadowEffect, QMessageBox, QDialog
 )
 from PyQt6.QtCore import Qt, QSize, QTimer
-from PyQt6.QtGui import QIcon, QCursor, QColor, QPixmap, QAction
+from PyQt6.QtGui import QIcon, QCursor, QColor, QPixmap, QAction, QPainter
+from PyQt6.QtSvg import QSvgRenderer  # Necesario para renderizar SVGs en el loader
 
 # --- CONFIGURACIÓN DE APLICACIONES ---
 APPS_CONFIG = [
-    {"name": "PROGAIN", "exe": "progain_app.exe", "icon": "construction"},
+    {"name": "PROGRAIN", "exe": "progain_app.exe", "icon": "construction"},
     {"name": "EQUIPOS", "exe": "alquiler_equipos.exe", "icon": "truck"},
     {"name": "FACTURAS", "exe": "gestion_facturas.exe", "icon": "receipt"},
     {"name": "FACTURAS EMP", "exe": "facturacion_gui.exe", "icon": "business"},
@@ -30,6 +31,105 @@ def resource_path(relative_path):
         base_path = os.path.abspath(".")
     return os.path.join(base_path, relative_path)
 
+def get_icon_path(icon_name):
+    """Resuelve la ruta del archivo SVG basado en el nombre clave."""
+    icon_map = {
+        "construction": "construction.svg",
+        "truck": "agriculture.svg",        
+        "receipt": "receipt_long.svg",
+        "business": "inventory.svg",       
+        "gavel": "gavel.svg",
+        "calculator": "request_quote.svg", 
+        "folder": "folder_open.svg",
+        "settings": "settings.svg",
+        "power_settings_new": "power_settings_new.svg"
+    }
+    filename = icon_map.get(icon_name, f"{icon_name}.svg")
+    return resource_path(os.path.join("icons", filename))
+
+# --- VENTANA DE CARGA (LOADER) ---
+class AppLoader(QDialog):
+    """
+    Ventana flotante modal que muestra el icono del programa mientras carga.
+    Estilo 'Industrial Light' (Blanco/Gris/Amarillo).
+    """
+    def __init__(self, app_config, parent=None):
+        super().__init__(parent)
+        self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.Dialog)
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.setModal(True)
+        self.setFixedSize(260, 280)
+
+        # Layout Principal (transparente para la sombra)
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(10, 10, 10, 10)
+
+        # Tarjeta contenedora
+        self.card = QFrame()
+        self.card.setStyleSheet("""
+            QFrame {
+                background-color: #FFFFFF;
+                border-radius: 16px;
+                border: 1px solid #F59E0B; /* Borde Amarillo sutil */
+            }
+        """)
+        
+        # Sombra profunda
+        shadow = QGraphicsDropShadowEffect(self)
+        shadow.setBlurRadius(30)
+        shadow.setYOffset(10)
+        shadow.setColor(QColor(0, 0, 0, 80))
+        self.card.setGraphicsEffect(shadow)
+
+        # Contenido de la tarjeta
+        card_layout = QVBoxLayout(self.card)
+        card_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        card_layout.setSpacing(20)
+
+        # 1. Icono Grande
+        self.icon_label = QLabel()
+        self.icon_label.setFixedSize(80, 80)
+        self.icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        
+        # Renderizar SVG manualmente para tamaño grande en QLabel
+        icon_path = get_icon_path(app_config["icon"])
+        if os.path.exists(icon_path):
+            pixmap = QPixmap(80, 80)
+            pixmap.fill(Qt.GlobalColor.transparent)
+            painter = QPainter(pixmap)
+            renderer = QSvgRenderer(icon_path)
+            renderer.render(painter)
+            painter.end()
+            self.icon_label.setPixmap(pixmap)
+
+        # 2. Texto "Abriendo..."
+        self.title_label = QLabel(f"Iniciando\n{app_config['name']}")
+        self.title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.title_label.setStyleSheet("""
+            color: #111827; 
+            font-family: 'Segoe UI'; 
+            font-size: 18px; 
+            font-weight: bold;
+        """)
+
+        # 3. Indicador de estado
+        self.status_label = QLabel("Cargando módulos...")
+        self.status_label.setStyleSheet("color: #6B7280; font-size: 12px;")
+
+        card_layout.addWidget(self.icon_label, 0, Qt.AlignmentFlag.AlignCenter)
+        card_layout.addWidget(self.title_label, 0, Qt.AlignmentFlag.AlignCenter)
+        card_layout.addWidget(self.status_label, 0, Qt.AlignmentFlag.AlignCenter)
+
+        main_layout.addWidget(self.card)
+        
+        # Centrar en el padre
+        if parent:
+            geo = parent.geometry()
+            self.move(
+                geo.center().x() - self.width() // 2,
+                geo.center().y() - self.height() // 2
+            )
+
 # --- BOTÓN DE LANZADOR ---
 class LauncherBtn(QToolButton):
     def __init__(self, app_config, parent=None):
@@ -44,38 +144,17 @@ class LauncherBtn(QToolButton):
         self.setFixedSize(140, 120)     # Botones cuadrados/rectangulares
         
         # Cargar Icono
-        self._create_icon(app_config["icon"])
-        
-        # Aplicar Estilos
-        self._apply_styles()
-
-    def _create_icon(self, icon_name):
-        """Carga el SVG correspondiente desde la carpeta icons/"""
-        # Mapeo de nombres de config a archivos SVG reales
-        # Asegúrate de que estos archivos existan en la carpeta 'icons'
-        icon_map = {
-            "construction": "construction.svg",
-            "truck": "agriculture.svg",        # Usamos agriculture/truck
-            "receipt": "receipt_long.svg",
-            "business": "inventory.svg",       # O business.svg
-            "gavel": "gavel.svg",
-            "calculator": "request_quote.svg", # O calculator.svg
-            "folder": "folder_open.svg",
-            "settings": "settings.svg",
-            "power_settings_new": "power_settings_new.svg"
-        }
-        
-        filename = icon_map.get(icon_name, f"{icon_name}.svg")
-        icon_path = resource_path(os.path.join("icons", filename))
-        
+        icon_path = get_icon_path(app_config["icon"])
         if os.path.exists(icon_path):
             self.setIcon(QIcon(icon_path))
         else:
-            # Fallback si no hay icono: Cuadrado gris con la inicial
-            print(f"Advertencia: Icono no encontrado en {icon_path}")
+            # Fallback
             pix = QPixmap(54, 54)
             pix.fill(QColor("#E0E0E0"))
             self.setIcon(QIcon(pix))
+        
+        # Aplicar Estilos
+        self._apply_styles()
 
     def _apply_styles(self):
         """Aplica hoja de estilos QSS moderna."""
@@ -198,7 +277,7 @@ class LauncherWindow(QMainWindow):
         self.main_layout.addWidget(self.status_bar)
 
     def _launch_program(self, app_config):
-        """Lógica de búsqueda y ejecución de programas."""
+        """Lógica de búsqueda y ejecución con Loader."""
         exe_name = app_config["exe"]
         prog_name = app_config["name"]
         
@@ -227,17 +306,28 @@ class LauncherWindow(QMainWindow):
         
         if target_path:
             try:
+                # 1. Mostrar Loader
+                loader = AppLoader(app_config, self)
+                loader.show()
+                QApplication.processEvents() # Forzar renderizado
+                
+                # Pequeña pausa estética para que se vea el loader (opcional)
+                # QTimer.singleShot(500, lambda: None) 
+
                 self.status_bar.setText(f"Ejecutando {prog_name}...")
                 
-                # Ejecutar de forma independiente (Detached)
+                # 2. Ejecutar
                 if sys.platform == 'win32':
                     subprocess.Popen([target_path], creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP)
                 else:
-                    subprocess.Popen([target_path]) # Linux/Mac (fallback)
+                    subprocess.Popen([target_path])
                 
-                QTimer.singleShot(2000, lambda: self._reset_status())
+                # 3. Cerrar loader después de 2.5 segundos
+                QTimer.singleShot(2500, loader.close)
+                QTimer.singleShot(2500, lambda: self._reset_status())
                 
             except Exception as e:
+                if 'loader' in locals(): loader.close()
                 self._show_error(f"Error al iniciar: {str(e)}")
         else:
             self._show_error(f"No se encontró: {exe_name}")
